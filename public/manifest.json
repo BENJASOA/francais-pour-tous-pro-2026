@@ -1,26 +1,33 @@
 {
   "name": "Français pour Tous Pro 2026",
   "short_name": "FrançaisPro",
+  "description": "Application professionnelle d'apprentissage du français",
   "start_url": "/",
   "display": "standalone",
-  "scope": "/",
   "background_color": "#ffffff",
   "theme_color": "#1976d2",
-  "description": "Application professionnelle d'apprentissage du français",
-  "screenshots": [],
+  "scope": "/",
   "icons": [
     {
-      "src": "/icon-192x192.png",
+      "src": "/vite.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/icon-512x512.png",
+      "src": "/vite.svg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
-  "categories": ["education", "productivity"]
+  "categories": ["education", "productivity"],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
 }
