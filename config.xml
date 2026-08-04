@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.benjasoa.francaispourtous" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Français pour Tous Pro</name>
+    <description>Application professionnelle d'apprentissage du français</description>
+    <author email="benjaminratovoniparany@gmail.com" href="https://benjasoa.com">BENJASOA</author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    
+    <!-- Permissions -->
+    <permission name="INTERNET" />
+    <permission name="CAMERA" />
+    <permission name="READ_EXTERNAL_STORAGE" />
+    <permission name="WRITE_EXTERNAL_STORAGE" />
+    <permission name="ACCESS_FINE_LOCATION" />
+    <permission name="ACCESS_COARSE_LOCATION" />
+    <permission name="RECORD_AUDIO" />
+    <permission name="GET_ACCOUNTS" />
+</widget>
