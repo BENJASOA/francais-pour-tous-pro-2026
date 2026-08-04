@@ -1,187 +1,174 @@
-// Type definitions
+// User Types
 export interface User {
   id: string;
   email: string;
-  displayName: string;
+  displayName?: string;
   photoURL?: string;
   phoneNumber?: string;
   country?: string;
-  language: string;
-  createdAt: Date;
-  updatedAt: Date;
   isVIP: boolean;
   vipExpiresAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
+// Authentication Types
+export interface AuthUser {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+}
+
+// Lesson Types
 export interface Lesson {
   id: string;
   title: string;
   description: string;
-  category: string;
   level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
-  content: string;
+  duration: number; // in minutes
+  category: string;
   imageURL?: string;
+  content: string;
+  isPremium: boolean;
   videoURL?: string;
+  downloadable: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Vocabulary Types
+export interface Vocabulary {
+  id: string;
+  french: string;
+  malagasy: string;
+  english?: string;
+  level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+  category: string;
+  examples: string[];
   audioURL?: string;
-  duration: number;
+  imageURL?: string;
   isPremium: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface Vocabulary {
-  id: string;
-  french: string;
-  malagasy: string;
-  pronunciation?: string;
-  examples: string[];
-  category: string;
-  level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
-  audioURL?: string;
-  createdAt: Date;
-}
-
-export interface Grammar {
-  id: string;
-  title: string;
-  level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
-  frenchExplanation: string;
-  malagasyExplanation: string;
-  examples: string[];
-  exercises: Exercise[];
-  isPremium: boolean;
-  createdAt: Date;
-}
-
-export interface Exercise {
+// Quiz Types
+export interface QuizQuestion {
   id: string;
   question: string;
-  type: 'multiple-choice' | 'fill-blank' | 'listening' | 'writing';
+  type: 'multiple-choice' | 'true-false' | 'fill-blank' | 'matching';
   options?: string[];
   correctAnswer: string;
-  explanation: string;
-  difficulty: number;
-}
-
-export interface Conjugation {
-  id: string;
-  infinitive: string;
-  tense: 'Présent' | 'Imparfait' | 'Passé composé' | 'Passé simple' | 'Plus-que-parfait' | 'Futur simple' | 'Futur antérieur' | 'Conditionnel' | 'Subjonctif' | 'Impératif' | 'Participe';
-  conjugations: Record<string, string>;
-  examples: string[];
-  exercises: Exercise[];
-  createdAt: Date;
+  explanation?: string;
+  points: number;
 }
 
 export interface Quiz {
   id: string;
   title: string;
   description: string;
+  level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+  category: string;
   questions: QuizQuestion[];
-  difficulty: number;
-  timeLimit?: number;
+  duration?: number; // in minutes
+  passingScore: number; // percentage
   isPremium: boolean;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface QuizQuestion {
-  id: string;
-  question: string;
-  type: 'multiple-choice' | 'fill-blank' | 'listening' | 'writing';
-  options?: string[];
-  correctAnswer: string;
-  explanation: string;
-  audioURL?: string;
-}
-
+// Video Types
 export interface Video {
   id: string;
   title: string;
   description: string;
   url: string;
   thumbnail?: string;
-  duration: number;
+  duration: number; // in minutes
   level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+  category: string;
+  views: number;
+  likes: number;
   isPremium: boolean;
   downloadable: boolean;
-  createdAt: Date;
-}
-
-export interface Audio {
-  id: string;
-  title: string;
-  url: string;
-  duration: number;
-  type: 'pronunciation' | 'dialogue' | 'listening-practice';
-  transcription?: string;
-  isPremium: boolean;
-  createdAt: Date;
-}
-
-export interface PDF {
-  id: string;
-  title: string;
-  description: string;
-  url: string;
-  type: 'book' | 'grammar' | 'vocabulary' | 'exercises';
-  isPremium: boolean;
-  size: number;
-  createdAt: Date;
-}
-
-export interface VIPSubscription {
-  id: string;
-  userId: string;
-  plan: 'monthly' | 'yearly';
-  price: number;
-  currency: string;
-  startDate: Date;
-  expiresAt: Date;
-  autoRenew: boolean;
-  paymentMethod: 'mvola' | 'orange-money' | 'airtel-money';
-  status: 'active' | 'expired' | 'cancelled';
-}
-
-export interface Payment {
-  id: string;
-  userId: string;
-  amount: number;
-  currency: string;
-  paymentMethod: 'mvola' | 'orange-money' | 'airtel-money';
-  status: 'pending' | 'completed' | 'failed';
-  reference: string;
+  subtitles?: {
+    language: string;
+    url: string;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface VIPCode {
+// Payment Types
+export interface Payment {
   id: string;
-  code: string;
-  duration: number; // in months
-  maxUses: number;
-  usedCount: number;
-  expiresAt: Date;
-  isActive: boolean;
+  userId: string;
+  amount: number; // in Ariary
+  currency: string;
+  method: 'mvola' | 'orange-money' | 'airtel-money';
+  status: 'pending' | 'completed' | 'failed';
+  reference: string;
+  phoneNumber: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface UserProgress {
+// VIP Subscription Types
+export interface VIPSubscription {
   id: string;
+  userId: string;
+  plan: 'monthly' | 'yearly';
+  status: 'active' | 'expired' | 'cancelled';
+  startDate: Date;
+  endDate: Date;
+  renewalDate?: Date;
+  autoRenew: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// User Progress Types
+export interface LessonProgress {
   userId: string;
   lessonId: string;
-  progress: number; // 0-100
+  progress: number; // percentage
+  completed: boolean;
+  startedAt: Date;
   completedAt?: Date;
-  lastAccessedAt: Date;
-  score?: number;
+  timeSpent: number; // in seconds
 }
 
-export interface Notification {
-  id: string;
+export interface QuizResult {
   userId: string;
-  title: string;
-  message: string;
-  type: 'lesson' | 'video' | 'subscription' | 'promotion';
-  data?: Record<string, any>;
-  read: boolean;
-  createdAt: Date;
+  quizId: string;
+  score: number; // percentage
+  answers: Record<string, string>;
+  passed: boolean;
+  timeSpent: number; // in seconds
+  completedAt: Date;
+}
+
+// UI State Types
+export interface UIState {
+  isDrawerOpen: boolean;
+  selectedBottomNav: string;
+  isDarkMode: boolean;
+  language: 'fr' | 'en' | 'mg';
+}
+
+// API Response Types
+export interface APIResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
 }

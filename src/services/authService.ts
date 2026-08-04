@@ -1,153 +1,47 @@
-import { auth } from '@config/firebase';
+import { auth, db } from './firebase';
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail,
-  updateProfile,
-  signInWithPopup,
-  GoogleAuthProvider,
+  updateProfile as firebaseUpdateProfile,
   User as FirebaseUser,
 } from 'firebase/auth';
-import { db, storage } from '@config/firebase';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { User } from '@types/index';
+import { storage } from './firebase';
 
-const googleProvider = new GoogleAuthProvider();
-
-export class AuthService {
-  // Register with email and password
-  static async registerWithEmail(
-    email: string,
-    password: string,
-    displayName: string
-  ): Promise<User> {
-    try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      
-      await updateProfile(result.user, {
-        displayName,
-      });
-
-      const userData: User = {
-        id: result.user.uid,
-        email: result.user.email || '',
-        displayName,
-        language: 'fr',
-        isVIP: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      await setDoc(doc(db, 'users', result.user.uid), userData);
-      return userData;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Login with email and password
-  static async loginWithEmail(email: string, password: string): Promise<User> {
-    try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
-      
-      if (!userDoc.exists()) {
-        throw new Error('User profile not found');
-      }
-
-      return userDoc.data() as User;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Login with Google
-  static async loginWithGoogle(): Promise<User> {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      let userDoc = await getDoc(doc(db, 'users', result.user.uid));
-
-      if (!userDoc.exists()) {
-        const userData: User = {
-          id: result.user.uid,
-          email: result.user.email || '',
-          displayName: result.user.displayName || '',
-          photoURL: result.user.photoURL || undefined,
-          language: 'fr',
-          isVIP: false,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        await setDoc(doc(db, 'users', result.user.uid), userData);
-        userDoc = await getDoc(doc(db, 'users', result.user.uid));
-      }
-
-      return userDoc.data() as User;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Logout
-  static async logout(): Promise<void> {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Send password reset email
-  static async sendPasswordReset(email: string): Promise<void> {
-    try {
-      await sendPasswordResetEmail(auth, email);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Get current user
-  static async getCurrentUser(): Promise<User | null> {
-    return new Promise((resolve) => {
-      const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-        if (firebaseUser) {
-          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-          resolve(userDoc.data() as User || null);
-        } else {
-          resolve(null);
-        }
-        unsubscribe();
-      });
-    });
-  }
-
-  // Update user profile
-  static async updateUserProfile(
+class AuthServiceClass {
+  async updateUserProfile(
     userId: string,
-    data: Partial<User>
+    updates: Record<string, any>
   ): Promise<void> {
     try {
-      await updateDoc(doc(db, 'users', userId), {
-        ...data,
+      const userRef = doc(db, 'users', userId);
+      await updateDoc(userRef, {
+        ...updates,
         updatedAt: new Date(),
       });
     } catch (error) {
-      throw error;
+      throw new Error('Failed to update user profile');
     }
   }
 
-  // Upload user photo
-  static async uploadUserPhoto(userId: string, file: File): Promise<string> {
+  async uploadUserPhoto(userId: string, file: File): Promise<string> {
     try {
-      const storageRef = ref(storage, `users/${userId}/profile.jpg`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
+      const storageRef = ref(storage, `users/${userId}/profile-photo`);
+      const result = await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(result.ref);
       return url;
     } catch (error) {
-      throw error;
+      throw new Error('Failed to upload photo');
+    }
+  }
+
+  async getUserProfile(userId: string) {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      return userDoc.data();
+    } catch (error) {
+      throw new Error('Failed to get user profile');
     }
   }
 }
+
+export const AuthService = new AuthServiceClass();
